@@ -1,7 +1,5 @@
 package subway;
 
-import java.util.Map;
-
 public class StationRequest {
     private String name;
 
