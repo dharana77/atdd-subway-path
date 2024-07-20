@@ -1,4 +1,4 @@
-package subway;
+package nextstep.subway;
 
 public class StationResponse {
     private Long id;

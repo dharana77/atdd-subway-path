@@ -1,4 +1,4 @@
-package subway.line;
+package nextstep.subway.acceptance.line;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -9,10 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import subway.StationRequest;
-import subway.line.dto.LineCreateRequest;
-import subway.line.dto.LineModifyRequest;
-import subway.line.dto.LineSectionAppendRequest;
+import nextstep.subway.StationRequest;
+import nextstep.subway.line.dto.LineCreateRequest;
+import nextstep.subway.line.dto.LineModifyRequest;
+import nextstep.subway.line.dto.LineSectionAppendRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;

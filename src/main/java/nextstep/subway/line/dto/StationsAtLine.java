@@ -1,6 +1,6 @@
-package subway.line.dto;
+package nextstep.subway.line.dto;
 
-import subway.Station;
+import nextstep.subway.Station;
 
 public class StationsAtLine {
   private Station upStation;

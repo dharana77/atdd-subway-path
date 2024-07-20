@@ -1,23 +1,23 @@
-package subway.line;
+package nextstep.subway.line;
 
+import nextstep.subway.line.dto.LineModifyRequest;
+import nextstep.subway.line.dto.LineSectionAppendRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.Station;
-import subway.StationRepository;
-import subway.exceptions.errors.SubwayException;
-import subway.line.dto.LineCreateRequest;
-import subway.line.dto.LineModifyRequest;
-import subway.line.dto.LineResponse;
-import subway.line.dto.LineSectionAppendRequest;
-import subway.line.dto.StationsAtLine;
+import nextstep.subway.Station;
+import nextstep.subway.StationRepository;
+import nextstep.subway.exceptions.errors.SubwayException;
+import nextstep.subway.line.dto.LineCreateRequest;
+import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.line.dto.StationsAtLine;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static subway.exceptions.errors.SubwayErrorCode.BAD_REQUEST;
-import static subway.exceptions.errors.SubwayErrorCode.NOT_FOUND;
+import static nextstep.subway.exceptions.errors.SubwayErrorCode.BAD_REQUEST;
+import static nextstep.subway.exceptions.errors.SubwayErrorCode.NOT_FOUND;
 
 @Transactional(readOnly = true)
 @Service

@@ -1,6 +1,6 @@
-package subway.line;
+package nextstep.subway.line;
 
-import subway.Station;
+import nextstep.subway.Station;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

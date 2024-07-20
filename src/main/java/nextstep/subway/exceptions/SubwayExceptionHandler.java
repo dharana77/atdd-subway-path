@@ -1,14 +1,11 @@
-package subway.exceptions;
+package nextstep.subway.exceptions;
 
-import ch.qos.logback.core.status.ErrorStatus;
-import org.apache.coyote.Response;
-import org.springframework.http.HttpStatus;
+import nextstep.subway.exceptions.errors.SubwayErrorCode;
+import nextstep.subway.exceptions.errors.SubwayErrorResponse;
+import nextstep.subway.exceptions.errors.SubwayException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import subway.exceptions.errors.SubwayErrorCode;
-import subway.exceptions.errors.SubwayErrorResponse;
-import subway.exceptions.errors.SubwayException;
 
 import java.util.Optional;
 import java.util.function.Function;

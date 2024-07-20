@@ -1,4 +1,4 @@
-package subway.exceptions.errors;
+package nextstep.subway.exceptions.errors;
 
 public class SubwayException extends RuntimeException {
   private final SubwayErrorCode errorCode;

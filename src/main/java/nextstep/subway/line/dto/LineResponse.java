@@ -1,7 +1,7 @@
-package subway.line.dto;
+package nextstep.subway.line.dto;
 
-import subway.StationResponse;
-import subway.line.Line;
+import nextstep.subway.StationResponse;
+import nextstep.subway.line.Line;
 
 import java.util.List;
 

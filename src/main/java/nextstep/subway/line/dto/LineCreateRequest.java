@@ -1,7 +1,7 @@
-package subway.line.dto;
+package nextstep.subway.line.dto;
 
-import subway.Station;
-import subway.line.Line;
+import nextstep.subway.line.Line;
+import nextstep.subway.Station;
 
 public class LineCreateRequest {
 

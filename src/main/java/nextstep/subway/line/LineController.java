@@ -1,5 +1,7 @@
-package subway.line;
+package nextstep.subway.line;
 
+import nextstep.subway.line.dto.LineModifyRequest;
+import nextstep.subway.line.dto.LineSectionAppendRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,10 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import subway.line.dto.LineCreateRequest;
-import subway.line.dto.LineModifyRequest;
-import subway.line.dto.LineResponse;
-import subway.line.dto.LineSectionAppendRequest;
+import nextstep.subway.line.dto.LineCreateRequest;
+import nextstep.subway.line.dto.LineResponse;
 
 import java.net.URI;
 import java.util.List;
