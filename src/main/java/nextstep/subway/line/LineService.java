@@ -117,13 +117,11 @@ public class LineService {
   }
 
   private boolean isReqUpstationIdNotEqualsIndex(LineSectionAppendRequest lineSectionAppendRequest, Long index) {
-    if (!lineSectionAppendRequest.getUpStationId().equals(index)) return true;
-    return false;
+    return !lineSectionAppendRequest.getUpStationId().equals(index);
   }
 
   private boolean isReqStationIdExist(Set lineSectionStations, LineSectionAppendRequest lineSectionAppendRequest) {
-    if(lineSectionStations.contains(lineSectionAppendRequest.getDownStationId())) return true;
-    return false;
+    return lineSectionStations.contains(lineSectionAppendRequest.getDownStationId());
   }
 
   private LineSection createNewLineSection(Line line, Long index, LineSectionAppendRequest lineSectionAppendRequest) {
