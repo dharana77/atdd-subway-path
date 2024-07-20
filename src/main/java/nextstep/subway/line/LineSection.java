@@ -26,7 +26,7 @@ public class LineSection {
   private Station upStation;
 
   @OneToOne
-  Station downStation;
+  private Station downStation;
 
   private int distance;
 
