@@ -21,7 +21,6 @@ public class StationService {
         return createStationResponse(station);
     }
 
-    //Q: transactional 없는 이유?
     public List<StationResponse> findAllStations() {
         return stationRepository.findAll().stream()
                 .map(this::createStationResponse)

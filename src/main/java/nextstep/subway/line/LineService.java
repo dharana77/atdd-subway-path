@@ -38,11 +38,12 @@ public class LineService {
   @Transactional
   public Line createLine(LineCreateRequest lineCreateRequest) {
     StationsAtLine stationsAtLine = getStationsAtLine(lineCreateRequest.getUpStationId(), lineCreateRequest.getDownStationId());
-    return lineRepository.save(lineCreateRequest.toLine(stationsAtLine.getUpStation(), stationsAtLine.getDownStation()));
+    LineSection lineSection = new LineSection(stationsAtLine.getUpStation(), stationsAtLine.getDownStation(), lineCreateRequest.getDistance());
+    return lineRepository.save(new Line());
   }
 
   public List<LineResponse> getLines() {
-    return lineRepository.findAllJoin().stream()
+    return lineRepository.findAll().stream()
             .map(LineResponse::from)
             .collect(Collectors.toList());
   }
@@ -79,13 +80,17 @@ public class LineService {
   public void appendLineSection(Long id, LineSectionAppendRequest lineSectionAppendRequest) {
     Line line = getLineById(id);
     List<LineSection> lineSections = getLineSectionsByLineId(id);
-    long index = lineSections.stream().map(item -> item.getIndex()).mapToLong(Long::longValue).max().orElse(1L);
+
+    long index = lineSections.stream().map(item -> item.getId()).mapToLong(Long::longValue).max().orElse(1L);
     Set<Long> lineSectionStations = getUniqueStationIds(lineSections);
     if(isReqUpstationIdNotEqualsIndex(lineSectionAppendRequest, index) || isReqStationIdExist(lineSectionStations, lineSectionAppendRequest)){
       throw new SubwayException(BAD_REQUEST);
     }
 
-    lineSectionRepository.save(createNewLineSection(line, index, lineSectionAppendRequest));
+    LineSection lineSection = createNewLineSection(lineSectionAppendRequest);
+    line.appendSection(lineSection);
+
+    lineSectionRepository.save(lineSection);
   }
 
   @Transactional
@@ -124,8 +129,8 @@ public class LineService {
     return lineSectionStations.contains(lineSectionAppendRequest.getDownStationId());
   }
 
-  private LineSection createNewLineSection(Line line, Long index, LineSectionAppendRequest lineSectionAppendRequest) {
-    return new LineSection(null, line, index + 1,
+  private LineSection createNewLineSection(LineSectionAppendRequest lineSectionAppendRequest) {
+    return new LineSection(
       stationRepository.findById(lineSectionAppendRequest.getUpStationId()).orElseThrow(() -> new SubwayException(NOT_FOUND)),
       stationRepository.findById(lineSectionAppendRequest.getDownStationId()).orElseThrow(() -> new SubwayException(NOT_FOUND)),
       lineSectionAppendRequest.getDistance());

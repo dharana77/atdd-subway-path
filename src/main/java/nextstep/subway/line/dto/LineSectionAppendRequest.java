@@ -12,6 +12,10 @@ public class LineSectionAppendRequest {
     this.downStationId = downStationId;
     this.upStationId = upStationId;
     this.distance = distance;
+
+    if(upStationId == null || downStationId == null) {
+      throw new IllegalArgumentException("올바르지 않은 입력 값입니다.");
+    }
   }
 
   public Long getUpStationId() {

@@ -2,6 +2,7 @@ package nextstep.subway.line.dto;
 
 import nextstep.subway.StationResponse;
 import nextstep.subway.line.Line;
+import nextstep.subway.line.LineSection;
 
 import java.util.List;
 
@@ -13,16 +14,16 @@ public class LineResponse {
 
   private String color;
 
-  private List<StationResponse> stations;
+  private List<LineSection> sections;
 
   public LineResponse() {
   }
 
-  public LineResponse(Long id, String name, String color, List<StationResponse> stations) {
+  public LineResponse(Long id, String name, String color, List<LineSection> sections) {
     this.id = id;
     this.name = name;
     this.color = color;
-    this.stations = stations;
+    this.sections = sections;
   }
 
   public Long getId() {
@@ -37,13 +38,11 @@ public class LineResponse {
     return color;
   }
 
-  public List<StationResponse> getStations(){
-    return stations;
+  public List<LineSection> getSections() {
+    return sections;
   }
 
   public static LineResponse from(Line line) {
-    StationResponse upStation = StationResponse.from(line.getUpStation());
-    StationResponse downStation = StationResponse.from(line.getDownStation());
-    return new LineResponse(line.getId(), line.getName(), line.getColor(), List.of(upStation, downStation));
+    return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getSections());
   }
 }
