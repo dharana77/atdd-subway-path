@@ -66,4 +66,16 @@ public class LineSection {
   public boolean containStation(Station station) {
     return upStation.equals(station) || downStation.equals(station);
   }
+
+  public void decreaseDistance(int distance) {
+    this.distance -= distance;
+  }
+
+  public void changeUpStation(Station upStation) {
+    this.upStation = upStation;
+  }
+
+  public void changeDownStation(Station downStation) {
+    this.downStation = downStation;
+  }
 }

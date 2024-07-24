@@ -1,11 +1,13 @@
 package nextstep.subway.line;
 
+import nextstep.subway.exceptions.errors.SubwayErrorCode;
+import nextstep.subway.exceptions.errors.SubwayException;
+
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Embeddable
 public class LineSections {
@@ -23,13 +25,34 @@ public class LineSections {
       return;
     }
 
-    List<LineSection> upSection = sections.stream()
+    //기준 역이 상행역
+    LineSection upSection = sections.stream()
             .filter(section -> section.containStation(lineSection.getUpStation()))
-            .collect(Collectors.toList());;
-
-    List<LineSection> downSection = sections.stream()
+            .findFirst().orElse(null);
+    //기준 역이 하행역
+    LineSection downSection = sections.stream()
             .filter(section -> section.containStation(lineSection.getDownStation()))
-            .collect(Collectors.toList());
+            .findFirst().orElse(null);
 
+    if (upSection == null && downSection == null) {
+      throw new SubwayException(SubwayErrorCode.NOT_FOUND);
+    }
+
+    if (upSection != null&& downSection != null) {
+      throw new SubwayException(SubwayErrorCode.BAD_REQUEST);
+    }
+
+    if (upSection != null) {
+      sections.add(upSection.getId().intValue(), lineSection);
+      upSection.decreaseDistance(lineSection.getDistance());
+      upSection.changeUpStation(lineSection.getDownStation());
+      return;
+    }
+
+    if (downSection != null) {
+      sections.add(downSection.getId().intValue(), lineSection);
+      downSection.decreaseDistance(lineSection.getDistance());
+      downSection.changeDownStation(lineSection.getUpStation());
+    }
   }
 }

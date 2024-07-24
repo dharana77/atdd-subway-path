@@ -6,7 +6,6 @@ import io.restassured.response.Response;
 import nextstep.subway.StationRequest;
 import nextstep.subway.StationResponse;
 import nextstep.subway.line.dto.LineCreateRequest;
-import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.LineSectionAppendRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
