@@ -2,6 +2,7 @@ package nextstep.subway.line.dto;
 
 import nextstep.subway.line.Line;
 import nextstep.subway.Station;
+import nextstep.subway.line.LineSections;
 
 public class LineCreateRequest {
 

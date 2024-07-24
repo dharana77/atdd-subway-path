@@ -62,4 +62,8 @@ public class LineSection {
   public int getDistance() {
     return distance;
   }
+
+  public boolean containStation(Station station) {
+    return upStation.equals(station) || downStation.equals(station);
+  }
 }
