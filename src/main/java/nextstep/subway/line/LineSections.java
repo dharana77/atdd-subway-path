@@ -3,6 +3,7 @@ package nextstep.subway.line;
 import nextstep.subway.exceptions.errors.SubwayErrorCode;
 import nextstep.subway.exceptions.errors.SubwayException;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -12,7 +13,7 @@ import java.util.List;
 @Embeddable
 public class LineSections {
 
-  @OneToMany(mappedBy = "line", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "line", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
   private List<LineSection> sections = new ArrayList<>();
 
   public List<LineSection> getSections() {

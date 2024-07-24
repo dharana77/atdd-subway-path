@@ -1,5 +1,7 @@
 package nextstep.subway;
 
+import nextstep.subway.exceptions.errors.SubwayErrorCode;
+import nextstep.subway.exceptions.errors.SubwayException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +15,10 @@ public class StationService {
 
     public StationService(StationRepository stationRepository) {
         this.stationRepository = stationRepository;
+    }
+
+    public Station findById(Long id) {
+        return stationRepository.findById(id).orElseThrow(() -> new SubwayException(SubwayErrorCode.NOT_FOUND));
     }
 
     @Transactional

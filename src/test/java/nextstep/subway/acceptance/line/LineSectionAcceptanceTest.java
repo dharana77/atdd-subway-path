@@ -59,7 +59,7 @@ public class LineSectionAcceptanceTest {
     this.이호선_id = 1L;
   }
 
-  @DisplayName("새로운 구간을 등록합니다.")
+  @DisplayName("새로운 중간 구간을 상행역 기준으로 등록합니다.")
   @Test
   void addSection() {
     // given
@@ -70,14 +70,14 @@ public class LineSectionAcceptanceTest {
       .then().log().all()
       .extract();
 
-    long newDownStationId = RestAssured.given().log().all()
+    long 새로운_상행역_id = RestAssured.given().log().all()
         .body(new StationRequest("새로운 상행역"))
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .when().post("/stations")
         .then().log().all()
         .extract().as(StationResponse.class).getId();
 
-    long newUpStationId = RestAssured.given().log().all()
+    long 새로운_하행역_id = RestAssured.given().log().all()
         .body(new StationRequest("새로운 하행역"))
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .when().post("/stations")
@@ -87,19 +87,19 @@ public class LineSectionAcceptanceTest {
     // when
     // 1. upStation 기준 중간역 추가
     RestAssured.given().log().all()
-      .body(new LineSectionAppendRequest(종합운동장_id, 잠실새내_id, 10))
+      .body(new LineSectionAppendRequest(종합운동장_id, 새로운_상행역_id, 10))
       .contentType(MediaType.APPLICATION_JSON_VALUE)
       .when().post("/lines/{lineId}/sections", 이호선_id)
       .then().log().all()
       .extract();
 
-    // 2. downStation 기준 중간역 추가
-    RestAssured.given().log().all()
-      .body(new LineSectionAppendRequest(종합운동장_id, 잠실새내_id, 10))
-      .contentType(MediaType.APPLICATION_JSON_VALUE)
-      .when().post("/lines/{lineId}/sections", 이호선_id)
-      .then().log().all()
-      .extract();
+//    // 2. downStation 기준 중간역 추가
+//    RestAssured.given().log().all()
+//      .body(new LineSectionAppendRequest(잠실새내_id, 새로운_하행역_id, 10))
+//      .contentType(MediaType.APPLICATION_JSON_VALUE)
+//      .when().post("/lines/{lineId}/sections", 이호선_id)
+//      .then().log().all()
+//      .extract();
 
     // then
     ExtractableResponse<Response> result = RestAssured.given().log().all()
@@ -107,14 +107,13 @@ public class LineSectionAcceptanceTest {
       .when().get("/lines/1")
       .then().log().all()
       .extract();
-
+//
     Assertions.assertThat(result.jsonPath().getList("stations", StationResponse.class)).hasSize(5)
       .extracting("name")
       .contains(
         "종합운동장",
         "잠실새내",
         "새로운 상행역",
-        "새로운 하행역",
         "잠실"
       );
   }

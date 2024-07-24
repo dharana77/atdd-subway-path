@@ -1,5 +1,6 @@
 package nextstep.subway.line;
 
+import nextstep.subway.StationService;
 import nextstep.subway.line.dto.LineModifyRequest;
 import nextstep.subway.line.dto.LineSectionAppendRequest;
 import org.springframework.stereotype.Service;
@@ -22,16 +23,16 @@ import static nextstep.subway.exceptions.errors.SubwayErrorCode.NOT_FOUND;
 @Transactional(readOnly = true)
 @Service
 public class LineService {
-
   private final LineRepository lineRepository;
-
   private final StationRepository stationRepository;
-
+  private final StationService stationService;
   private final LineSectionRepository lineSectionRepository;
 
-  public LineService(LineRepository lineRepository, StationRepository stationRepository, LineSectionRepository lineSectionRepository) {
+  public LineService(LineRepository lineRepository, StationRepository stationRepository,
+                     StationService stationService, LineSectionRepository lineSectionRepository) {
     this.lineRepository = lineRepository;
     this.stationRepository = stationRepository;
+    this.stationService = stationService;
     this.lineSectionRepository = lineSectionRepository;
   }
 
@@ -79,17 +80,11 @@ public class LineService {
   @Transactional
   public void appendLineSection(Long id, LineSectionAppendRequest lineSectionAppendRequest) {
     Line line = getLineById(id);
-    List<LineSection> lineSections = getLineSectionsByLineId(id);
+    Station upStation = stationService.findById(lineSectionAppendRequest.getUpStationId());
+    Station downStation = stationService.findById(lineSectionAppendRequest.getDownStationId());
 
-    long index = lineSections.stream().map(item -> item.getId()).mapToLong(Long::longValue).max().orElse(1L);
-    Set<Long> lineSectionStations = getUniqueStationIds(lineSections);
-    if(isReqUpstationIdNotEqualsIndex(lineSectionAppendRequest, index) || isReqStationIdExist(lineSectionStations, lineSectionAppendRequest)){
-      throw new SubwayException(BAD_REQUEST);
-    }
-
-    LineSection lineSection = createNewLineSection(lineSectionAppendRequest);
+    LineSection lineSection = new LineSection(upStation, downStation, lineSectionAppendRequest.getDistance());
     line.appendSection(lineSection);
-
     lineSectionRepository.save(lineSection);
   }
 
@@ -105,34 +100,5 @@ public class LineService {
     }
 
     lineSectionRepository.deleteByLineIdAndStationId(stationId);
-  }
-
-  private List<LineSection> getLineSectionsByLineId(Long lineId) {
-    return lineSectionRepository.findAllByLineId(lineId);
-  }
-
-
-  private Set<Long> getUniqueStationIds(List<LineSection> lineSections) {
-    Set<Long> lineSectionStations = new HashSet<>();
-    lineSections.forEach(item -> {
-      lineSectionStations.add(item.getUpStation().getId());
-      lineSectionStations.add(item.getDownStation().getId());
-    });
-    return lineSectionStations;
-  }
-
-  private boolean isReqUpstationIdNotEqualsIndex(LineSectionAppendRequest lineSectionAppendRequest, Long index) {
-    return !lineSectionAppendRequest.getUpStationId().equals(index);
-  }
-
-  private boolean isReqStationIdExist(Set lineSectionStations, LineSectionAppendRequest lineSectionAppendRequest) {
-    return lineSectionStations.contains(lineSectionAppendRequest.getDownStationId());
-  }
-
-  private LineSection createNewLineSection(LineSectionAppendRequest lineSectionAppendRequest) {
-    return new LineSection(
-      stationRepository.findById(lineSectionAppendRequest.getUpStationId()).orElseThrow(() -> new SubwayException(NOT_FOUND)),
-      stationRepository.findById(lineSectionAppendRequest.getDownStationId()).orElseThrow(() -> new SubwayException(NOT_FOUND)),
-      lineSectionAppendRequest.getDistance());
   }
 }
