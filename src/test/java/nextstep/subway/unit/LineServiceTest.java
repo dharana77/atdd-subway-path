@@ -42,7 +42,6 @@ public class LineServiceTest {
         // when
         lineService.appendLineSection(line.getId(), new LineSectionAppendRequest(station1.getId(), station2.getId(), 10));
         // then
-        System.out.println(line.getSections());
         assertThat(line.getSections()).hasSize(1);
     }
 }
