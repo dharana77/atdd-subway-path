@@ -1,15 +1,10 @@
 package nextstep.subway.line;
 
-import nextstep.subway.Station;
-
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -30,6 +25,12 @@ public class Line {
 
   public Line(Long id, String name, String color, LineSections lineSections) {
     this.id = id;
+    this.name = name;
+    this.color = color;
+    this.lineSections = lineSections;
+  }
+
+  public Line(String name, String color, LineSections lineSections) {
     this.name = name;
     this.color = color;
     this.lineSections = lineSections;

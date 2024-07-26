@@ -38,7 +38,7 @@ public class LineServiceTest {
         Station station1 = stationRepository.save(new Station("강남역"));
         Station station2 = stationRepository.save(new Station("양재역"));
         Line line = lineRepository.save(new Line(null, "신분당선", "RED", new LineSections()));
-        LineSection lineSection = new LineSection(station1, station2, 10);
+        LineSection lineSection = new LineSection(line, station1, station2, 10);
         // when
         lineService.appendLineSection(line.getId(), new LineSectionAppendRequest(station1.getId(), station2.getId(), 10));
         // then

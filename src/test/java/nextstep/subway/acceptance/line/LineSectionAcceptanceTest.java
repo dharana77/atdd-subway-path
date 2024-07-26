@@ -108,7 +108,7 @@ public class LineSectionAcceptanceTest {
       .then().log().all()
       .extract();
 //
-    Assertions.assertThat(result.jsonPath().getList("stations", StationResponse.class)).hasSize(5)
+    Assertions.assertThat(result.jsonPath().getList("sections", StationResponse.class)).hasSize(5)
       .extracting("name")
       .contains(
         "종합운동장",

@@ -40,7 +40,20 @@ public class LineService {
   public Line createLine(LineCreateRequest lineCreateRequest) {
     StationsAtLine stationsAtLine = getStationsAtLine(lineCreateRequest.getUpStationId(), lineCreateRequest.getDownStationId());
     LineSection lineSection = new LineSection(stationsAtLine.getUpStation(), stationsAtLine.getDownStation(), lineCreateRequest.getDistance());
-    return lineRepository.save(new Line());
+    LineSections lineSections = new LineSections();
+    lineSections.addSection(lineSection);
+    Line line = new Line(lineCreateRequest.getName(), lineCreateRequest.getColor(), lineSections);
+    lineSection.applyLine(line);
+
+//    System.out.println(line);
+//    System.out.println(line.getSections().get(0).getLine());
+//    System.out.println(line.getSections().get(0).getUpStation());
+//    System.out.println(line.getSections().get(0).getDownStation());
+//    System.out.println(line.getSections().get(0).getDistance());
+
+//    line.getSections().forEach(System.out::println);
+//    lineSectionRepository.save(lineSection);
+    return lineRepository.save(line);
   }
 
   public List<LineResponse> getLines() {
@@ -50,7 +63,10 @@ public class LineService {
   }
 
   public LineResponse getLine(Long id) {
-    return LineResponse.from(lineRepository.findById(id).orElseThrow(() -> new SubwayException(NOT_FOUND)));
+    Line line =  lineRepository.findById(id).orElseThrow(() -> new SubwayException(NOT_FOUND));
+//    System.out.println(line.getName());
+//    System.out.println(line.getSections());
+    return LineResponse.from(line);
   }
 
   @Transactional
@@ -83,7 +99,7 @@ public class LineService {
     Station upStation = stationService.findById(lineSectionAppendRequest.getUpStationId());
     Station downStation = stationService.findById(lineSectionAppendRequest.getDownStationId());
 
-    LineSection lineSection = new LineSection(upStation, downStation, lineSectionAppendRequest.getDistance());
+    LineSection lineSection = new LineSection(line, upStation, downStation, lineSectionAppendRequest.getDistance());
     line.appendSection(lineSection);
     lineSectionRepository.save(lineSection);
   }
@@ -92,7 +108,7 @@ public class LineService {
   public void deleteLineSection(Long lineId, Long stationId) {
     List<LineSection> lineSection = lineSectionRepository.findAllByLineId(lineId);
 
-    LineSection lastLineSection = lineSection.stream().max((a, b) -> (int) (a.getIndex() - b.getIndex()))
+    LineSection lastLineSection = lineSection.stream().max((a, b) -> (int) (a.getId() - b.getId()))
       .orElseThrow(() -> new SubwayException(NOT_FOUND));
 
     if (lastLineSection.getDownStation().getId() != stationId || lineSection.size() <= 1) {

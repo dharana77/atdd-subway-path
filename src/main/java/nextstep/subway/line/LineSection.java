@@ -20,8 +20,6 @@ public class LineSection {
   @JoinColumn(name = "line_id")
   private Line line;
 
-  private Long index;
-
   @OneToOne
   private Station upStation;
 
@@ -39,6 +37,13 @@ public class LineSection {
     this.distance = distance;
   }
 
+  public LineSection(Line line, Station upStation, Station downStation, int distance) {
+    this.line = line;
+    this.upStation = upStation;
+    this.downStation = downStation;
+    this.distance = distance;
+  }
+
   public Long getId() {
     return id;
   }
@@ -47,9 +52,6 @@ public class LineSection {
     return line;
   }
 
-  public Long getIndex() {
-    return index;
-  }
 
   public Station getUpStation() {
     return upStation;
@@ -61,6 +63,10 @@ public class LineSection {
 
   public int getDistance() {
     return distance;
+  }
+
+  public void applyLine(Line line) {
+    this.line = line;
   }
 
   public boolean containStation(Station station) {

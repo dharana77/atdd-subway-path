@@ -5,6 +5,8 @@ import nextstep.subway.line.Line;
 import nextstep.subway.line.LineSection;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class LineResponse {
 
@@ -14,16 +16,16 @@ public class LineResponse {
 
   private String color;
 
-  private List<LineSection> sections;
+  private List<StationResponse> stations;
 
   public LineResponse() {
   }
 
-  public LineResponse(Long id, String name, String color, List<LineSection> sections) {
+  public LineResponse(Long id, String name, String color, List<StationResponse> stations) {
     this.id = id;
     this.name = name;
     this.color = color;
-    this.sections = sections;
+    this.stations = stations;
   }
 
   public Long getId() {
@@ -38,11 +40,19 @@ public class LineResponse {
     return color;
   }
 
-  public List<LineSection> getSections() {
-    return sections;
+  public List<StationResponse> getStations() {
+    return stations;
   }
 
   public static LineResponse from(Line line) {
-    return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getSections());
+    List<StationResponse> stations = line.getSections().stream().
+      flatMap(section -> Stream.of(
+        new StationResponse(section.getUpStation().getId(), section.getUpStation().getName()),
+        new StationResponse(section.getDownStation().getId(), section.getDownStation().getName())
+      ))
+      .distinct()
+      .collect(Collectors.toList());
+
+    return new LineResponse(line.getId(), line.getName(), line.getColor(), stations);
   }
 }
