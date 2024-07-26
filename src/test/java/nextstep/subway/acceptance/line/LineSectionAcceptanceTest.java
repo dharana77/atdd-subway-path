@@ -104,7 +104,7 @@ public class LineSectionAcceptanceTest {
     // then
     ExtractableResponse<Response> result = RestAssured.given().log().all()
       .contentType(MediaType.APPLICATION_JSON_VALUE)
-      .when().get("/lines/1")
+      .when().get("/lines/sections/1")
       .then().log().all()
       .extract();
 //

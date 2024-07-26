@@ -1,20 +1,18 @@
 package nextstep.subway.line;
 
-import nextstep.subway.StationService;
-import nextstep.subway.line.dto.LineModifyRequest;
-import nextstep.subway.line.dto.LineSectionAppendRequest;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import nextstep.subway.Station;
 import nextstep.subway.StationRepository;
+import nextstep.subway.StationService;
 import nextstep.subway.exceptions.errors.SubwayException;
 import nextstep.subway.line.dto.LineCreateRequest;
+import nextstep.subway.line.dto.LineModifyRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.line.dto.LineSectionAppendRequest;
 import nextstep.subway.line.dto.StationsAtLine;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static nextstep.subway.exceptions.errors.SubwayErrorCode.BAD_REQUEST;
@@ -45,14 +43,6 @@ public class LineService {
     Line line = new Line(lineCreateRequest.getName(), lineCreateRequest.getColor(), lineSections);
     lineSection.applyLine(line);
 
-//    System.out.println(line);
-//    System.out.println(line.getSections().get(0).getLine());
-//    System.out.println(line.getSections().get(0).getUpStation());
-//    System.out.println(line.getSections().get(0).getDownStation());
-//    System.out.println(line.getSections().get(0).getDistance());
-
-//    line.getSections().forEach(System.out::println);
-//    lineSectionRepository.save(lineSection);
     return lineRepository.save(line);
   }
 
@@ -64,8 +54,6 @@ public class LineService {
 
   public LineResponse getLine(Long id) {
     Line line =  lineRepository.findById(id).orElseThrow(() -> new SubwayException(NOT_FOUND));
-//    System.out.println(line.getName());
-//    System.out.println(line.getSections());
     return LineResponse.from(line);
   }
 
@@ -111,7 +99,7 @@ public class LineService {
     LineSection lastLineSection = lineSection.stream().max((a, b) -> (int) (a.getId() - b.getId()))
       .orElseThrow(() -> new SubwayException(NOT_FOUND));
 
-    if (lastLineSection.getDownStation().getId() != stationId || lineSection.size() <= 1) {
+    if (!lastLineSection.getDownStation().getId().equals(stationId) || lineSection.size() <= 1) {
       throw new SubwayException(BAD_REQUEST);
     }
 
