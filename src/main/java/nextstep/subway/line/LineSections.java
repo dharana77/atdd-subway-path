@@ -36,7 +36,7 @@ public class LineSections {
             .findFirst().orElse(null);
 
     if (upSection == null && downSection == null) {
-      throw new SubwayException(SubwayErrorCode.NOT_FOUND);
+      throw new SubwayException(SubwayErrorCode.BAD_REQUEST);
     }
 
     if (upSection != null&& downSection != null) {
