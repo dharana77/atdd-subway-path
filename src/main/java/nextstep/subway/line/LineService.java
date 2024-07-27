@@ -89,6 +89,7 @@ public class LineService {
 
     LineSection lineSection = new LineSection(line, upStation, downStation, lineSectionAppendRequest.getDistance());
     line.appendSection(lineSection);
+
     lineSectionRepository.save(lineSection);
   }
 

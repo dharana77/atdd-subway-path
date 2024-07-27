@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import java.util.Objects;
 
 @Entity
 public class LineSection {
@@ -85,5 +86,20 @@ public class LineSection {
 
   public void changeDownStation(Station downStation) {
     this.downStation = downStation;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (this == object) return true;
+    if (object == null || getClass() != object.getClass()) return false;
+    LineSection lineSection = (LineSection) object;
+    return Objects.equals(line, lineSection.line)
+      && Objects.equals(upStation, lineSection.upStation)
+      && Objects.equals(downStation, lineSection.downStation);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(line, upStation, downStation);
   }
 }

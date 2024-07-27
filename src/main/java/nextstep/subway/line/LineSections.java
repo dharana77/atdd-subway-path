@@ -1,5 +1,6 @@
 package nextstep.subway.line;
 
+import nextstep.subway.Station;
 import nextstep.subway.exceptions.errors.SubwayErrorCode;
 import nextstep.subway.exceptions.errors.SubwayException;
 
@@ -46,7 +47,12 @@ public class LineSections {
     if (upSection != null) {
       sections.add(upSection.getId().intValue(), lineSection);
       upSection.decreaseDistance(lineSection.getDistance());
-      upSection.changeUpStation(lineSection.getDownStation());
+
+      Station tempDownStation = lineSection.getDownStation();
+      lineSection.changeDownStation(upSection.getDownStation());
+      upSection.changeDownStation(tempDownStation);
+      lineSection.changeUpStation(upSection.getDownStation());
+
       return;
     }
 

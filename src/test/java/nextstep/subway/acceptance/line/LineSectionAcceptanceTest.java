@@ -15,6 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.List;
+
 @DisplayName("지하철 노선 구간 관리 기능")
 @Sql(scripts = "classpath:truncate-tables.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -50,7 +52,7 @@ public class LineSectionAcceptanceTest {
       .extract().as(StationResponse.class).getId();
 
     RestAssured.given().log().all()
-      .body(new LineCreateRequest("2호선", "green", this.종합운동장_id, this.잠실_id, 10))
+      .body(new LineCreateRequest("2호선", "green", this.종합운동장_id, this.잠실새내_id, 10))
       .contentType(MediaType.APPLICATION_JSON_VALUE)
       .when().post("/lines")
       .then().log().all()
@@ -63,20 +65,6 @@ public class LineSectionAcceptanceTest {
   @Test
   void addSection() {
     // given
-    RestAssured.given().log().all()
-      .body(new LineSectionAppendRequest(종합운동장_id, 잠실새내_id, 10))
-      .contentType(MediaType.APPLICATION_JSON_VALUE)
-      .when().post("/lines/{lineId}/sections", 이호선_id)
-      .then().log().all()
-      .extract();
-
-    long 새로운_상행역_id = RestAssured.given().log().all()
-        .body(new StationRequest("새로운 상행역"))
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .when().post("/stations")
-        .then().log().all()
-        .extract().as(StationResponse.class).getId();
-
     long 새로운_하행역_id = RestAssured.given().log().all()
         .body(new StationRequest("새로운 하행역"))
         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -84,37 +72,55 @@ public class LineSectionAcceptanceTest {
         .then().log().all()
         .extract().as(StationResponse.class).getId();
 
-    // when
-    // 1. upStation 기준 중간역 추가
+    // when 기존 upStation 기준 추가
     RestAssured.given().log().all()
-      .body(new LineSectionAppendRequest(종합운동장_id, 새로운_상행역_id, 10))
+      .body(new LineSectionAppendRequest(종합운동장_id, 새로운_하행역_id, 7))
       .contentType(MediaType.APPLICATION_JSON_VALUE)
       .when().post("/lines/{lineId}/sections", 이호선_id)
       .then().log().all()
       .extract();
 
-//    // 2. downStation 기준 중간역 추가
-//    RestAssured.given().log().all()
-//      .body(new LineSectionAppendRequest(잠실새내_id, 새로운_하행역_id, 10))
-//      .contentType(MediaType.APPLICATION_JSON_VALUE)
-//      .when().post("/lines/{lineId}/sections", 이호선_id)
-//      .then().log().all()
-//      .extract();
+    // then
+    ExtractableResponse<Response> result = RestAssured.given().log().all()
+      .contentType(MediaType.APPLICATION_JSON_VALUE)
+      .when().get("/lines/1")
+      .then().log().all()
+      .extract();
+
+    Assertions.assertThat(result.jsonPath().getList("stations", StationResponse.class)).hasSize(3)
+      .extracting("name")
+      .isEqualTo(List.of("종합운동장", "새로운 하행역", "잠실새내"));
+  }
+
+  @DisplayName("새로운 중간 구간을 하행역 기준으로 등록합니다.")
+  @Test
+  void testAppendLineSectionViaDownStation() {
+    // given
+    long 새로운_상행역_id = RestAssured.given().log().all()
+        .body(new StationRequest("새로운 상행역"))
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .when().post("/stations")
+        .then().log().all()
+        .extract().as(StationResponse.class).getId();
+
+    // when
+    // 새로운 구간을 downStation 기준 으로 중간역 추가
+    RestAssured.given().log().all()
+      .body(new LineSectionAppendRequest(새로운_상행역_id, 잠실새내_id, 10))
+      .contentType(MediaType.APPLICATION_JSON_VALUE)
+      .when().post("/lines/{lineId}/sections", 이호선_id)
+      .then().log().all()
+      .extract();
 
     // then
     ExtractableResponse<Response> result = RestAssured.given().log().all()
       .contentType(MediaType.APPLICATION_JSON_VALUE)
-      .when().get("/lines/sections/1")
+      .when().get("/lines/1")
       .then().log().all()
       .extract();
-//
-    Assertions.assertThat(result.jsonPath().getList("sections", StationResponse.class)).hasSize(5)
+
+    Assertions.assertThat(result.jsonPath().getList("stations", StationResponse.class)).hasSize(3)
       .extracting("name")
-      .contains(
-        "종합운동장",
-        "잠실새내",
-        "새로운 상행역",
-        "잠실"
-      );
+      .isEqualTo(List.of("종합운동장", "새로운 상행역", "잠실"));
   }
 }

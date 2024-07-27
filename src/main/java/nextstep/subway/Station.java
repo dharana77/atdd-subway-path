@@ -1,6 +1,7 @@
 package nextstep.subway;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Station {
@@ -23,5 +24,24 @@ public class Station {
 
   public String getName() {
     return name;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (this == object) {
+      return true;
+    }
+
+    if (object == null || getClass() != object.getClass()) {
+      return false;
+    }
+
+    Station station = (Station)object;
+    return Objects.equals(name, station.name);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name);
   }
 }
